@@ -25,6 +25,7 @@ object Hash {
 
     val p1TurnMask = hexToLong(ZobristTables.p1TurnMask)
     val actorMasks = ZobristTables.actorMasks.map(hexToLong)
+    val turnPhaseMask = java.lang.Long.rotateLeft(p1TurnMask, 17)
   }
 
   object ZobristConstants {}
