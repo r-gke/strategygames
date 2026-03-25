@@ -12,7 +12,7 @@ case object GrandAbalone
       standardInitialPosition = false,
       boardType = Hex6
     ) {
-  override def perfIcon: Char = '\ue927'
+  override def perfIcon: Char = '\ue92C'
 
   override def perfId: Int = 701
 
@@ -22,18 +22,12 @@ case object GrandAbalone
 
   override def hasPrevPlayer: Boolean = true
 
-  /** The sequence of the number of actions per turn is 12* (P1 plays one move, then, starting with P2, both
-    * players have two actions per turn).
+  /** Grand Abalone has 2 plies per turn (vs 1 player-switch), so plies and
+    * turnCount diverge. Overrides base implementation accordingly.
     */
-  override def turnCountFromFen(fenTurnCount: Int, player: Player): Int =
-    fenTurnCount match {
-      case t if t < 2 => player.fold(0, 1)
-      case t          => 3 + 4 * (t - 2) + player.fold(0, 2)
-    }
+  override def pliesFromFen(fenTurnCount: Int, player: Player, currentTurnPlies: Int = 0): Int =
+    math.max(0, 2 * turnCountFromFen(fenTurnCount, player) - 1) + currentTurnPlies
 
-  /** The sequence of the number of actions per turn is 12* (P1 plays one move, then, starting with P2, both
-    * players have two actions per turn).
-    */
   override def isAutoEndTurn(situation: Situation, orig: Pos, dest: Pos): Boolean =
     situation.board.history.pliesRemainingThisTurn.fold(true)(_ < 2)
 

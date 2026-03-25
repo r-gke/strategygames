@@ -21,13 +21,14 @@ sealed abstract class BoardType(
     .toList
   final val cellSet: Set[Pos]   = cellList.toSet
 
-  final val cellList_forBinary: List[Pos] = Range(0, height)
+  final val cellListForBinary: List[Pos] = Range(0, height)
     .flatMap(y =>
       Range(0, width)
         .filter(x => isCell(x, y))
         .map(x => new Pos(x, y))
     )
     .toList
+  final val cellSetForBinary: Set[Pos]   = cellListForBinary.toSet
 
   //
   // Cell
