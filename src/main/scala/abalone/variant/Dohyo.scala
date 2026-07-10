@@ -43,13 +43,9 @@ case object Dohyo
   }
 
   /** Rotations are allowed iff there is no push available. */
-  override def validMoves(situation: Situation): Map[Pos, List[Move]] = {
-    var res = validMoves_line(situation).toList
-    if (res.isEmpty) res = validMoves_jump(situation).toList
-
-    res
-      .groupBy(_._1)
-      .map { case (k, v) => k -> v.map(_._2).flatten }
+  override def validMovesCore(situation: Situation): List[(Pos, List[Move])] = {
+    val res = validMoves_line(situation)
+    (if (res.isEmpty) validMoves_jump(situation) else res).toList
   }
 
   /** Rotations of a certain cell are allowed iff there is no push available anywhere. */
@@ -57,8 +53,7 @@ case object Dohyo
     if (
       situation.board.pieces
         .filter(t => isUsable(situation, t._2))
-        .find { case (a, _) => !validMoves_lineCore(situation, a).isEmpty }
-        .isDefined
+        .exists { case (a, _) => !validMoves_lineCore(situation, a).isEmpty }
     ) validMoves_lineCore(situation, a)
     else validMoves_jumpCore(situation, a)
   }

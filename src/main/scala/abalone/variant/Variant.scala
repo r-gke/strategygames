@@ -2,12 +2,9 @@ package strategygames.abalone.variant
 
 import cats.data.Validated
 import cats.syntax.option._
-import scala.annotation.nowarn
-import scalalib.extensions.*
-
 import strategygames.abalone._
-import strategygames.abalone.format.{ FEN, Uci }
-import strategygames.{ GameFamily, Player }
+import strategygames.abalone.format.{FEN, Uci}
+import strategygames.{GameFamily, Player}
 
 import scala.annotation.nowarn
 
@@ -61,9 +58,12 @@ abstract class Variant private[variant] (
   def startPlayer: Player = P1
 
   def validMoves(situation: Situation): Map[Pos, List[Move]]   =
-    (validMoves_line(situation).toList ++ validMoves_jump(situation).toList)
+    validMovesCore(situation)
       .groupBy(_._1)
       .map { case (k, v) => k -> v.map(_._2).flatten }
+  def validMovesCore(situation: Situation): List[(Pos, List[Move])]   =
+    validMoves_line(situation).toList ++ validMoves_jump(situation).toList
+
   def validMoves(situation: Situation, a: Pos): List[Move]     = {
     val ap = situation.board(a)
     if (ap.isEmpty || !isUsable(situation, ap.get)) return List()
