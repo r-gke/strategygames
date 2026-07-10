@@ -36,10 +36,10 @@ case class Situation(board: Board, player: Player) {
   lazy val moves: Map[Pos, List[Move]] = board.variant.validMoves(this)
 
   lazy val status: Option[Status] =
-    if (variantEnd) Status.VariantEnd.some
-    else if (staleMate) Status.Stalemate.some
-    else if (autoDraw) Status.Draw.some
-    else none
+    if (variantEnd) Some(Status.VariantEnd)
+    else if (staleMate) Some(Status.Stalemate)
+    else if (autoDraw) Some(Status.Draw)
+    else None
 
   private def variantEnd = board.variant.specialEnd(this)
 }

@@ -138,8 +138,12 @@ abstract class Variant private[variant] (
         (dest, out)
       }
       .filter(_._1.isDefined)
+      .filter(b => validMoves_lineCore_filter(situation, a, b._1.get, b._2))
       .map(b => computeMove(a, b._1.get, situation, capture = if (b._2) b._1 else None))
       .toList
+  }
+  def validMoves_lineCore_filter(situation: Situation, orig: Pos, dest: Pos, out: Boolean): Boolean = {
+    true
   }
 
   def validMoves_jump(situation: Situation): Map[Pos, List[Move]]   = {
@@ -232,7 +236,6 @@ abstract class Variant private[variant] (
     ) && situation.board.history.threefoldRepetition
   }
 
-  private def canJumpTo(situation: Situation, a: Pos): Boolean =
     !situation.board.isPiece(a) && boardType.isCell(a)
 
   // Move pieces on the board. Other bits (including score) are handled by Move.finalizeAfter()
@@ -344,9 +347,9 @@ abstract class Variant private[variant] (
   def winningScore = 6
 
   def winner(situation: Situation): Option[Player] = {
-    if (situation.moves.values.forall(_.isEmpty)) Some(!situation.player)
     else if (situation.board.history.score.p1 >= winningScore) Some(P1)
     else if (situation.board.history.score.p2 >= winningScore) Some(P2)
+    else if (situation.moves.values.forall(_.isEmpty)) Some(!situation.player)// Loss by lack of an available move
     else None
   }
 

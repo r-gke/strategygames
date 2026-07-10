@@ -53,6 +53,8 @@ sealed abstract class HexBoardType(val side: Int)
   override def isCell(x: Int, y: Int) = norm.dist(side - 1, side - 1, x, y) < side
 }
 
+case object Hex4 extends HexBoardType(4)
+
 case object Hex5 extends HexBoardType(5)
 
 case object Hex6 extends HexBoardType(6)
