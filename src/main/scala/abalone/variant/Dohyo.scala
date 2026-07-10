@@ -48,7 +48,7 @@ case object Dohyo
     (if (res.isEmpty) validMoves_jump(situation) else res).toList
   }
 
-  /** Rotations of a certain cell are allowed iff there is no push available anywhere. */
+  /** Rotations of a given cell are allowed iff there is no push available anywhere. */
   override def validMovesCore(situation: Situation, a: Pos): List[Move] = {
     if (
       situation.board.pieces
@@ -62,12 +62,12 @@ case object Dohyo
   override def validMoves_jumpCore(situation: Situation, a: Pos): List[Move] = {
     boardType.norm
       .getNeigh(a)
-      .flatMap { case (vect, b) =>
+      .flatMap { case (vect, _) =>
         var dests = List[Pos]()
         val pivot = a - vect;
 
         if (situation.board(pivot) == situation.board(a)) {
-          var nvect    = boardType.norm.getNext(-1 * vect)
+          var nvect    = boardType.norm.getNext(vect)
           var obstacle = false
 
           while (!obstacle) {
@@ -80,7 +80,7 @@ case object Dohyo
             }
           }
 
-          nvect = boardType.norm.getPrev(-1 * vect)
+          nvect = boardType.norm.getPrev(vect)
           obstacle = false
           var stop = false;
 
