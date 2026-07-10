@@ -105,6 +105,12 @@ case object Dohyo
       .toList
   }
 
+  override protected def boardAfter_pieces(pieces: PieceMap, orig: Pos, dest: Pos): PieceMap = {
+    if (boardType.norm(dest - orig) < 3 && !pieces.contains(dest))
+      pieces - orig + (dest -> pieces(orig)) // Rotation
+    else super.boardAfter_pieces(pieces, orig, dest)
+  }
+
   override def initialFen: FEN =
     format.FEN("1SS1/SSSSS/1SSSS1/7/1ssss1/sssss/1ss1 0 0 b 0 1")
 }
